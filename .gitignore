@@ -1,0 +1,77 @@
+# Log files
+*.log
+**/logs/
+**/app*.log
+**/startup.log
+**/run.log
+
+# Database files
+**/data/
+**/*.db
+**/*.mv.db
+**/*.lock.db
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment variables (sensitive)
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Maven
+**/target/
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# Node modules (if any)
+node_modules/
+
+# MinIO data (should not be committed)
+**/minio-data/
+**/minio/data/
+
+# ML Service logs
+**/stdout.log
+**/stderr.log
+
+# Large model files (should be downloaded separately)
+**/models/**/*.safetensors
+**/models/**/*.bin
+**/models/**/*.pt
+**/models/**/*.pth
+
+# MinIO executables (should be downloaded separately)
+**/minio/minio.exe
+**/minio/mc.exe
+**/minio/minio
+**/minio/mc

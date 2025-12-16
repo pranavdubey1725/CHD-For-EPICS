@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/ecgcare;AUTO_SERVER=TRUE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minio
+  secretKey: minio12345
+  bucket: ecg-bucket
+
+jwt:
+  issuer: ecgcare
+  secret: 9OcXCsPIkYMx+5lo0OqYY9uC+hgoQ4vHvBFlMgchy4A=
+  access-ttl-minutes: 15
+  refresh-ttl-days: 7
+
+ml:
+  service-url: http://localhost:8000
+  predict-endpoint: /predict
+  connect-timeout-seconds: 5
+  read-timeout-seconds: 60
+  max-retries: 3
+  retry-delay-seconds: 2
+  max-image-size-bytes: 10485760  # 10MB

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation Layout --- */
+        #header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            background: #ffffff;
+            height: 65px;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .brand span {
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-item {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            color: #333;
+            background-color: #f0f0f0;
+        }
+
+        .nav-item.active {
+            color: #333;
+            background-color: #e8e8e8;
+        }
+
+        /* --- User Profile Dropdown --- */
+        .user-profile-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background-color: #e0e0e0;
+            color: #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .user-avatar:hover {
+            background-color: #d0d0d0;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background-color: #fff;
+            min-width: 180px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        .dropdown-menu a {
+            color: #444;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .show-dropdown {
+            display: block;
+        }
+
+        /* --- Main Content --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        section {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Home Section --- */
+        #section-home h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        #section-home>p {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+            min-width: 180px;
+        }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* --- Patient Section --- */
+        #section-patients h2 {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-primary {
+            background: #333;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #555;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #999;
+        }
+
+        .patient-card {
+            background: #ffffff;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.2s;
+        }
+
+        .patient-card:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .patient-card h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .patient-card small {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .btn-secondary {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .patient-card-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .patient-scan-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+            background: #f5f5f5;
+        }
+
+        .no-scan-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            border: 1px dashed #d0d0d0;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .patient-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .patient-info small {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-view-scan {
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .btn-view-scan:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        /* Scan Image Modal */
+        .scan-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scan-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .scan-modal-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .scan-modal-content img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .scan-modal-close {
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* --- Scan Section --- */
+        .scan-container {
+            text-align: center;
+            padding: 50px 40px;
+            border: 2px dashed #d0d0d0;
+            border-radius: 12px;
+            background: #fafafa;
+            margin-top: 20px;
+        }
+
+        .scan-container i {
+            font-size: 48px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .scan-container h3 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .scan-container p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .scan-container input[type="file"] {
+            margin-bottom: 15px;
+        }
+
+        /* --- Modal Styles --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 420px;
+            max-width: 90%;
+            max-height: 90vh;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #999;
+        }
+
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+            padding: 12px;
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #e8e8e8;
+        }
+
+        .btn-save {
+            background: #333;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #555;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header id="header-bar">
+        <div class="brand" style="display: flex; align-items: center; gap: 12px;">
+            MediHeart <span>Dashboard</span>
+        </div>
+
+        <nav class="nav-links">
+            <a class="nav-item active" onclick="switchTab('home')">Home</a>
+            <a class="nav-item" onclick="switchTab('patients')">Patient Details</a>
+            <a class="nav-item" onclick="switchTab('report')">Generate Report</a>
+        </nav>
+
+        <div class="user-profile-container" onclick="toggleUserDropdown()">
+            <div class="user-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div id="userDropdown" class="dropdown-menu">
+                <a href="#" onclick="showAccountDetails(); return false;">Account Details</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="section-home">
+            <h1>Welcome back, <span id="docNameDisplay">Dr. Smith</span></h1>
+            <p>Select an option from the navigation bar to begin.</p>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Patients</h3>
+                    <p id="totalPatientsCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Scans</h3>
+                    <p>2</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-patients" style="display:none;">
+            <div class="section-header">
+                <h2>Patient Records</h2>
+                <button onclick="openAddModal()" class="btn-primary">+ Add New Patient</button>
+            </div>
+
+            <input type="text" id="searchBar" placeholder="Search by patient code (e.g., PAT-...)..." onkeyup="filterPatients()"
+                class="search-input">
+
+            <div id="patient-list-container"></div>
+        </section>
+
+        <section id="section-report" style="display:none;">
+            <h2>Generate Medical Report</h2>
+            <div style="background: white; padding: 25px; border-radius: 12px; margin-top: 20px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Select Patient:</label>
+                <select id="reportPatientSelect" class="form-input" style="margin-bottom: 20px;">
+                    <option value="">-- Choose a patient --</option>
+                </select>
+                <button onclick="generateReport()" class="btn-primary" style="width: 100%;">
+                    📄 Generate Report
+                </button>
+            </div>
+            
+            <!-- Report Display Area -->
+            <div id="reportDisplay" style="display: none; margin-top: 30px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <!-- Report content will be inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <div id="addPatientModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Patient</h2>
+            <input type="text" id="newPatientName" placeholder="Full Name *" class="form-input" required>
+            <input type="number" id="newPatientAge" placeholder="Age *" class="form-input" required>
+            <select id="newPatientGender" class="form-input" required>
+                <option value="">Select Gender *</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="date" id="newPatientDOB" placeholder="Date of Birth" class="form-input">
+            <input type="tel" id="newPatientPhone" placeholder="Phone" class="form-input">
+            <textarea id="newPatientHistory" placeholder="Medical History" class="form-input" rows="2"></textarea>
+            <textarea id="newPatientDiagnosis" placeholder="Diagnosis" class="form-input" rows="2"></textarea>
+            <textarea id="newPatientNotes" placeholder="Notes" class="form-input" rows="2"></textarea>
+            <button onclick="addNewPatient()" class="btn-save">Save Patient</button>
+            <button onclick="closeAddModal()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- View Patient Details Modal -->
+    <div id="viewPatientModal" class="modal" onclick="closeModalOnBackdrop(event, 'viewPatientModal')">
+        <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <h2>Patient Details</h2>
+            <div id="patientDetailsContent" style="line-height: 1.8;">
+                <!-- Patient details will be inserted here -->
+            </div>
+            
+            <!-- ECG Scans Section -->
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e8e8e8;">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem;">ECG Scans</h3>
+                <div id="patientScansContainer" style="margin-bottom: 15px;">
+                    <!-- Scans will be loaded here -->
+                </div>
+                <button onclick="openUploadScanModal()" class="btn-primary" style="width: 100%;">
+                    📤 Upload New ECG Scan
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button id="editPatientBtn" onclick="openEditPatient()" class="btn-primary" style="flex: 1;">Edit Patient</button>
+                <button id="deletePatientBtn" onclick="deleteCurrentPatient()" class="btn-secondary" style="flex: 1; background: #dc2626; color: white; border: none;">Delete Patient</button>
+                <button onclick="closeViewPatientModal()" class="btn-cancel" style="flex: 1;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Scan Modal -->
+    <div id="uploadScanModal" class="modal" onclick="closeModalOnBackdrop(event, 'uploadScanModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>Upload ECG Scan</h2>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select ECG Image</label>
+                <input type="file" id="scanFileInput" accept="image/jpeg,image/png,image/jpg" class="form-input" style="padding: 10px;">
+                <small style="color: #666;">Supported formats: JPEG, PNG (Max 10MB)</small>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Notes (Optional)</label>
+                <textarea id="scanNotes" placeholder="Add notes about this scan..." class="form-input" rows="3"></textarea>
+            </div>
+            <div id="scanPreview" style="margin-bottom: 15px; display: none;">
+                <img id="scanPreviewImage" style="max-width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
+            </div>
+            <button onclick="uploadScan()" id="uploadScanBtn" class="btn-save">Upload Scan</button>
+            <button onclick="closeUploadScanModal()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountDetailsModal" class="modal" onclick="closeModalOnBackdrop(event, 'accountDetailsModal')">
+        <div class="modal-content" style="max-width: 500px;" onclick="event.stopPropagation()">
+            <h2>Account Details</h2>
+            <div id="accountDetailsContent" style="line-height: 1.8;">
+                <!-- Account details will be inserted here -->
+            </div>
+            <button onclick="closeAccountDetails()" class="btn-cancel" style="margin-top: 20px; width: 100%;">Close</button>
+        </div>
+    </div>
+
+    <!-- Edit Patient Modal -->
+    <div id="editPatientModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Patient</h2>
+            <input type="text" id="editPatientName" placeholder="Full Name *" class="form-input" required>
+            <input type="number" id="editPatientAge" placeholder="Age *" class="form-input" required>
+            <select id="editPatientGender" class="form-input" required>
+                <option value="">Select Gender *</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="date" id="editPatientDOB" placeholder="Date of Birth" class="form-input">
+            <input type="tel" id="editPatientPhone" placeholder="Phone" class="form-input">
+            <textarea id="editPatientHistory" placeholder="Medical History" class="form-input" rows="2"></textarea>
+            <textarea id="editPatientDiagnosis" placeholder="Diagnosis" class="form-input" rows="2"></textarea>
+            <textarea id="editPatientNotes" placeholder="Notes" class="form-input" rows="2"></textarea>
+            <button onclick="savePatientEdit()" class="btn-save">Save Changes</button>
+            <button onclick="closeEditModal()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Scan Image Viewer Modal -->
+    <div id="scanViewerModal" class="scan-modal" onclick="closeScanViewer(event)">
+        <div class="scan-modal-content" onclick="event.stopPropagation()">
+            <h3 id="scanViewerTitle">ECG Scan</h3>
+            <img id="scanViewerImage" src="" alt="ECG Scan">
+            <br>
+            <button class="scan-modal-close" onclick="closeScanViewer()">Close</button>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
