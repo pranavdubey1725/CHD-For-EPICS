@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:file:./data/ecgcare;AUTO_SERVER=TRUE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/ecgcare;AUTO_SERVER=TRUE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
   h2:
     console:
-      enabled: true
+      enabled: ${SPRING_H2_CONSOLE_ENABLED:false}
       path: /h2-console
   jpa:
     hibernate:
@@ -15,7 +15,6 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: false
   flyway:
     enabled: true
@@ -27,19 +26,19 @@ spring:
       max-request-size: 10MB
 
 minio:
-  endpoint: http://localhost:9000
-  accessKey: minio
-  secretKey: minio12345
-  bucket: ecg-bucket
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  accessKey: ${MINIO_ACCESS_KEY:minio}
+  secretKey: ${MINIO_SECRET_KEY:minio12345}
+  bucket: ${MINIO_BUCKET:ecg-bucket}
 
 jwt:
   issuer: ecgcare
-  secret: 9OcXCsPIkYMx+5lo0OqYY9uC+hgoQ4vHvBFlMgchy4A=
+  secret: ${JWT_SECRET:dev-jwt-secret-change-me}
   access-ttl-minutes: 15
   refresh-ttl-days: 7
 
 ml:
-  service-url: http://localhost:8000
+  service-url: ${ML_SERVICE_URL:http://localhost:8000}
   predict-endpoint: /predict
   connect-timeout-seconds: 5
   read-timeout-seconds: 60

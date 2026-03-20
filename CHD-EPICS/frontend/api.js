@@ -3,7 +3,13 @@
  * Handles all backend API calls with proper authentication
  */
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL =
+    // If deployed, we default to `/api` and rely on Vercel rewrites to proxy to Render.
+    // For local dev, the frontend runs on :3000 while the backend runs on :8080.
+    window.API_BASE_URL ||
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8080/api'
+        : '/api');
 
 // ============================================
 // UTILITY FUNCTIONS

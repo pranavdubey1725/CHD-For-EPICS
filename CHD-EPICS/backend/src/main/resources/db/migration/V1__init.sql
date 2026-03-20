@@ -1,5 +1,5 @@
-﻿-- H2 Database Migration Script V1
--- Compatible with H2 database syntax
+-- Database Schema Migration V1
+-- Written to be compatible with both H2 (PostgreSQL mode) and PostgreSQL
 
 create table doctor (
   doctor_id varchar(36) primary key,
@@ -20,9 +20,9 @@ create table doctor_auth (
 
 create table doctor_crypto (
   doctor_id varchar(36) primary key references doctor(doctor_id) on delete cascade,
-  public_key varbinary(2048) not null,
-  private_key_enc varbinary(2048) not null,
-  private_key_salt varbinary(64) not null,
+  public_key bytea not null,
+  private_key_enc bytea not null,
+  private_key_salt bytea not null,
   kek_params varchar(1000) not null
 );
 
@@ -53,9 +53,9 @@ create index idx_audit_doctor_time on audit_log(doctor_id, created_at);
 create table patient (
   patient_id varchar(36) primary key,
   anonymized_code varchar(100) unique,
-  enc_payload varbinary(10000) not null,
-  enc_payload_iv varbinary(16) not null,
-  enc_payload_tag varbinary(16) not null,
+  enc_payload bytea not null,
+  enc_payload_iv bytea not null,
+  enc_payload_tag bytea not null,
   created_at timestamp not null default current_timestamp,
   updated_at timestamp not null default current_timestamp
 );
@@ -64,9 +64,9 @@ create table patient_key (
   patient_id varchar(36) not null references patient(patient_id) on delete cascade,
   doctor_id varchar(36) not null references doctor(doctor_id) on delete cascade,
   wrapping_scheme varchar(50) not null,
-  dek_enc varbinary(512) not null,
-  dek_iv varbinary(16) not null,
-  dek_tag varbinary(16) not null,
+  dek_enc bytea not null,
+  dek_iv bytea not null,
+  dek_tag bytea not null,
   primary key (patient_id, doctor_id)
 );
 
@@ -110,8 +110,8 @@ create table draft (
   doctor_id varchar(36) not null references doctor(doctor_id) on delete cascade,
   patient_id varchar(36) references patient(patient_id) on delete cascade,
   form_type varchar(100) not null,
-  enc_payload varbinary(10000) not null,
-  enc_payload_iv varbinary(16) not null,
-  enc_payload_tag varbinary(16) not null,
+  enc_payload bytea not null,
+  enc_payload_iv bytea not null,
+  enc_payload_tag bytea not null,
   updated_at timestamp not null default current_timestamp
 );
