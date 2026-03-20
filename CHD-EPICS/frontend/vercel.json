@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://chd-for-epics.onrender.com/api/:path*"
+    }
+  ]
+}
+
